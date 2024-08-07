@@ -1,41 +1,61 @@
 from pprint import pprint
 import json
 
-numbers_list = [1,2,3,4,5,6,7,8,9]
+# Typealias to improve reading
+GameState = list[list[int]]
 
-def is_line_solved(state: list[list[int]], line: int) -> bool:
-    for i in numbers_list:
-        # The line being checked must contain all numbers,
-        # otherwise it is not solved
-        if not state[line].__contains__(i):
-            return False
+def get_possible_numbers(from_list: list[int]) -> list[int]:
+    return filter(not list(range(1, 10).__contains__()))
 
-    return True
+def is_row_solved(state: GameState, row: int) -> bool:
+    # The row being checked must contain all numbers
+    return sorted(state[row]) == list(range(1, 10))
 
-def is_row_solved(state: list[list[int]], row: int) -> bool:
-    stateRow = []
-    # Transposes the desired row into an array
+def is_column_solved(state: GameState, column: int) -> bool:
+    column_values = []
+    # Transposes the desired column into an array
     for i in range(len(state)):
         for j in range(len(state[i])):
-            if j == row:
-                stateRow.append(state[i][j])
+            if j == column:
+                column_values.append(state[i][j])    
+    
+    return sorted(column_values) == list(range(1, 10))
 
-    # The row must contain all numbers,
-    # otherwise it is not solved
-    for i in numbers_list:
-        if not stateRow.__contains__(i):
-            return False
+def is_subgrid_solved(state: GameState, row: int, column: int) -> bool:
+    # Calculate the starting coordinate
+    start_row = (row // 3) * 3
+    start_column = (column // 3) * 3
+
+    values = []
+
+    for i in range(3):
+        for j in range(3):
+            # Stores all numbers inside the subgrid
+            values.append(state[start_row + i][start_column + j])
+
+    return sorted(values) == list(range(1, 10))
+
+def dfs(state: GameState):
+    for row in range(len(state)):
+        for column in range(len(state[row])):
+            if state[row][column] == 0:
+                print(f"Unassigned cell at ({row}, {column})")
+            else:
+                if is_row_solved(state, row) and \
+                   is_column_solved(state, column) and \
+                   is_subgrid_solved(state, row, column):
+                    return True
+                else:
+                    return False
+
     
     return True
 
-def is_square_solved(state: list[list[int]], square: int) -> bool:
-    mappedSquare = []
-    
 
 # Loads the initial state from JSON
 f = open("initial_state.json")
 initial_state = json.load(f)
 
-pprint(is_row_solved(initial_state, 0))
+dfs(state=initial_state)
 
 f.close()

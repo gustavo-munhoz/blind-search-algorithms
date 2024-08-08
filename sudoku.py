@@ -1,11 +1,12 @@
 from pprint import pprint
 import json
+import copy
 
 # Typealias to improve reading
 GameState = list[list[int]]
 
-def get_possible_numbers(from_list: list[int]) -> list[int]:
-    return filter(not list(range(1, 10).__contains__()))
+def get_possible_numbers_from(numbers: set[int]) -> list[int]:
+    return list(set(range(1, 10)).difference(numbers))
 
 def is_row_solved(state: GameState, row: int) -> bool:
     # The row being checked must contain all numbers
@@ -35,19 +36,16 @@ def is_subgrid_solved(state: GameState, row: int, column: int) -> bool:
 
     return sorted(values) == list(range(1, 10))
 
-def dfs(state: GameState):
+def dfs(state: GameState) -> bool:
+    stateCopy = copy.deepcopy(state)
+    
     for row in range(len(state)):
         for column in range(len(state[row])):
-            if state[row][column] == 0:
-                print(f"Unassigned cell at ({row}, {column})")
-            else:
-                if is_row_solved(state, row) and \
-                   is_column_solved(state, column) and \
-                   is_subgrid_solved(state, row, column):
-                    return True
-                else:
-                    return False
-
+            if stateCopy[row][column] == 0:
+                for num in get_possible_numbers_from(stateCopy[row]):
+                    stateCopy[row][column] = num
+                    dfs(stateCopy)
+            
     
     return True
 
@@ -56,6 +54,6 @@ def dfs(state: GameState):
 f = open("initial_state.json")
 initial_state = json.load(f)
 
-dfs(state=initial_state)
+print(dfs(state=initial_state))
 
 f.close()

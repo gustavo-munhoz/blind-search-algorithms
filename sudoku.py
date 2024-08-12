@@ -13,6 +13,21 @@ def print_execution_stats(time, currentMemory, peakMemory):
 - Elapsed time: {time:.6f} s
 - Current memory used: {currentMemory / 10**6:.6f} MB
 - Peak memory used: {peakMemory / 10**6:.6f} MB\n""")
+    
+def print_sudoku_board(board: GameState):
+    '''Prints the bame board in a more comprehensible way.'''
+    for row in range(len(board)):
+        if row % 3 == 0 and row != 0:
+            print("-" * 24)
+
+        for col in range(len(board[row])):
+            if col % 3 == 0 and col != 0:
+                print(" | ", end="")
+
+            if col == 8:
+                print(board[row][col])
+            else:
+                print(str(board[row][col]) + " ", end="")
 
 def get_row_numbers(state: GameState, row: int) -> set[int]:
     '''Returns all numbers in the row being checked.'''
@@ -61,7 +76,7 @@ def is_subgrid_solved(state: GameState, row: int, column: int) -> bool:
     return sorted(values) == list(range(1, 10))
 
 
-def is_game_solved(state):
+def is_game_solved(state) -> bool:
     '''Checks if game is solved, by testing all rows, columns and subgrids in current `GameState`.'''
 
     for row in range(len(state)):
@@ -112,8 +127,8 @@ end_time = time.time()
 elapsed_time = end_time - start_time
 
 if solved:
-    print("Solution found!")
-    pprint(game)
+    print("Solution found!\n")
+    print_sudoku_board(game)
     print_execution_stats(elapsed_time, current, peak)
     
 else: print("Solution not found.")

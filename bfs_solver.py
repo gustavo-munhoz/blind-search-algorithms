@@ -17,7 +17,7 @@ class BFSSudokuSolver(SudokuSolver):
                 for column in range(len(current_state[row])):
                     if current_state[row][column] == 0:
                         # If the current number is unassigned, will save a state copy for each possible value.
-                        for num in self.get_possible_numbers(row, column):
+                        for num in self.get_possible_numbers(row, column, current_state):
                             new_state = copy.deepcopy(current_state)
                             new_state[row][column] = num
                             queue.append(new_state)
@@ -32,3 +32,5 @@ class BFSSudokuSolver(SudokuSolver):
                     return current_state
 
         return None  # Return None if no solution is found
+    
+    

@@ -19,7 +19,7 @@ class DFSSudokuSolver(SudokuSolver):
                             state[row][column] = 0
                         return False
 
-            return self.is_game_solved(self.state)
+            return self.is_game_solved()
 
         if dfs(self.state):
             return self.state

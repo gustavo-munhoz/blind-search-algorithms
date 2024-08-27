@@ -22,6 +22,6 @@ class DFSSudokuSolver(SudokuSolver):
             return self.is_game_solved()
 
         if dfs(self.state):
-            return self.state
+            return self.state # Solution found
         else:
-            return None
+            return None # No solution

@@ -1,4 +1,5 @@
 from sudoku_solver import SudokuSolver, GameState
+from pprint import pprint
 
 class GreedySudokuSolver(SudokuSolver):
     def solve(self) -> GameState:
@@ -21,7 +22,7 @@ class GreedySudokuSolver(SudokuSolver):
                             best_options = options
                         
             if best_cell is None:
-                # All cells are assigned to a number
+                # All cells are assigned to a number, check if solved
                 return self.is_game_solved()
             
             row, column = best_cell
@@ -31,9 +32,13 @@ class GreedySudokuSolver(SudokuSolver):
                 if backtrack():
                     return True
 
-                # Will reset the cell if backtrack is triggered
+                # Reset the cell if backtrack is triggered
                 self.state[row][column] = 0
             
             return False
-    
-        return self.state if backtrack() else None
+        
+        if backtrack():
+            return self.state
+        else:
+            print("No solution found.")
+            return None

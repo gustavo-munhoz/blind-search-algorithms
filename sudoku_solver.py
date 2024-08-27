@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 GameState = list[list[int]]
 
 class SudokuSolver(ABC):
+    '''An abstract class that contains useful methods for implementing different sudoku solving algorithms.'''
+    
     def __init__(self, initial_state: GameState):
         self.state = initial_state
 
